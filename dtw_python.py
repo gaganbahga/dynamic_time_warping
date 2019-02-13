@@ -31,6 +31,9 @@ class DTW_Extractor(object):
                                           ctypes.c_int]
         self.compute_dtw_func.restype = DTW_Extractor.DTW_path
 
+        self.deallocate_dtw_func = self.libmfcc.deallocate_DTW
+        self.deallocate_dtw_func.argtypes = [DTW_Extractor.DTW_path]
+
 
     def compute_dtw(self, seq1, seq2, w_diag, band_win):
         """
@@ -54,13 +57,15 @@ class DTW_Extractor(object):
         result = self.compute_dtw_func(seq1_p, seq2_p, seq1_len, seq2_len, dim1, w_diag, band_win)
         temp = np.ctypeslib.as_array(result.distances, (result.length,))
         dtw_dist = np.copy(temp)
+        self.deallocate_dtw_func(result)
         return dtw_dist
 
 
 if __name__ == '__main__':
     """Some testing code"""
     ext = DTW_Extractor('mfcc_config')
-    a, _ = librosa.core.load('orig1.wav', sr=None)
-    a = a[:1000].reshape((50,20))
-    dtw = ext.compute_dtw(a, a, 1., -1)
+    t, _ = librosa.core.load('orig1.wav', sr=None)
+    a = t[:1000].reshape((-1,20))
+    b = t[1000:2000].reshape((-1,20))
+    dtw = ext.compute_dtw(a, b, 1., -1)
     print(dtw)
