@@ -37,9 +37,9 @@ extern "C" {
     /**
      dtw_path function returns a struct which contains array. In order to deallocate
      memory of that array, call this function
-     @param path pointer to the dtw path struct
+     @param path pointer to the dtw path array
      */
-    void deallocate_DTW(DTW_path* path){
-        delete[] path->distances;
+    void deallocate_DTW(float* path){
+        free(path);
     }
 }

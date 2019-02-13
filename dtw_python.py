@@ -1,3 +1,10 @@
+"""
+dtw_python.cpp
+libDTW
+
+Author: Gagandeep Singh, 13-02-2019
+"""
+
 import ctypes
 import numpy as np
 import platform
@@ -15,7 +22,7 @@ class DTW_Extractor(object):
     def __init__(self, config_path):
         super(DTW_Extractor, self).__init__()
         if platform.system() == 'Linux':
-            self.libmfcc = ctypes.CDLL('./libMfccExtractor.so')
+            self.libmfcc = ctypes.CDLL('./libDTW.so')
         elif platform.system() == 'Darwin':
             self.libmfcc = ctypes.CDLL('./libDTW.dylib')
         else:
@@ -32,7 +39,7 @@ class DTW_Extractor(object):
         self.compute_dtw_func.restype = DTW_Extractor.DTW_path
 
         self.deallocate_dtw_func = self.libmfcc.deallocate_DTW
-        self.deallocate_dtw_func.argtypes = [DTW_Extractor.DTW_path]
+        self.deallocate_dtw_func.argtypes = [ctypes.POINTER(ctypes.c_float)]
 
 
     def compute_dtw(self, seq1, seq2, w_diag, band_win):
@@ -57,7 +64,7 @@ class DTW_Extractor(object):
         result = self.compute_dtw_func(seq1_p, seq2_p, seq1_len, seq2_len, dim1, w_diag, band_win)
         temp = np.ctypeslib.as_array(result.distances, (result.length,))
         dtw_dist = np.copy(temp)
-        self.deallocate_dtw_func(result)
+        self.deallocate_dtw_func(result.distances)
         return dtw_dist
 
 
@@ -67,5 +74,6 @@ if __name__ == '__main__':
     t, _ = librosa.core.load('orig1.wav', sr=None)
     a = t[:1000].reshape((-1,20))
     b = t[1000:2000].reshape((-1,20))
-    dtw = ext.compute_dtw(a, b, 1., -1)
+    for i in range(100000):
+        dtw = ext.compute_dtw(a, b, 1., -1)
     print(dtw)
