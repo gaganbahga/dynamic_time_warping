@@ -16,6 +16,8 @@
  */
 typedef struct DTW_path {
     float* distances;
+    int* seq1_indices;
+    int* seq2_indices;
     int length;
 } DTW_path;
 
@@ -149,7 +151,7 @@ public:
  @param seq2 matrix filled with sequence 2
  @param fn distance function
  @param w_diag weight on the diagonal
- @param band_win window to be considered along diagonal for DTW path
+ @param band_win window (on both sides) to be considered along diagonal for DTW path. -1 will disable this
  @return dtw path
  */
 DTW_path get_dtw_path(const Matrix<float>& seq1,

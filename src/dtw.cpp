@@ -92,7 +92,7 @@ void backtrack(const Matrix<float>& dist, const Matrix<char> &direction,
         ++path_len;
     }
     values.resize(path_len);
-    indices.reserve(path_len);
+    indices.resize(path_len);
 
     for (int i = 0; i < path_len; ++i){
         indices[path_len - i - 1] = reverse_path[i];
@@ -178,10 +178,16 @@ DTW_path get_dtw_path(const Matrix<float>& seq1,
     std::vector<float> path_values;
     std::vector<std::tuple<int, int>> path_indices;
     float total_cost = calculate_dtw(distances, path_values, path_indices, w_diag);
-    float *data = new float[path_values.size()];
-    for (int i = 0; i < path_values.size(); i++)
+    float* data = new float[path_values.size()];
+    int* seq1_indices = new int[path_indices.size()];
+    int* seq2_indices = new int[path_indices.size()];
+    for (int i = 0; i < path_values.size(); ++i){
         data[i] = path_values[i];
-    DTW_path path = {.distances = data, .length = (int)path_values.size()};
+        seq1_indices[i] = std::get<0>(path_indices[i]);
+        seq2_indices[i] = std::get<1>(path_indices[i]);
+    }
+
+    DTW_path path = {.distances = data, .seq1_indices = seq1_indices, .seq2_indices = seq2_indices, .length = (int)path_values.size()};
     return path;
 }
 

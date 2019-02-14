@@ -35,11 +35,11 @@ extern "C" {
     }
     
     /**
-     dtw_path function returns a struct which contains array. In order to deallocate
-     memory of that array, call this function
-     @param path pointer to the dtw path array
+     dtw_path function returns a struct which contains arrays. In order to deallocate
+     memory of these arrays, call this function
+     @param path pointer to the array
      */
-    void deallocate_DTW(float* path){
+    void deallocate_DTW(void* path){
         free(path);
     }
 }
