@@ -52,7 +52,7 @@ class DTW_Extractor(object):
         :param seq2: np.ndarray, [len_seq2, dim] second sequence
         :param w_diag: float, weight on moving diagonally
         :param band_win: int, find path within band_win (on both sides) of the diagonal. -1 will look unrestricted
-        :return: np.ndarray, [dtw_path_len,] distances of the DTW path
+        :return: (np.ndarray,)*3, [dtw_path_len,] distances of the DTW path, indices of seq1, indices of seq2
         """
         seq1_len = seq1.shape[0]
         dim1 = seq1.shape[1]
@@ -84,5 +84,4 @@ if __name__ == '__main__':
     t = np.random.random((1500))
     a = t[:1000].reshape((-1,20))
     b = t[40:1040].reshape((-1,20))
-    distances = ext.compute_dtw(a, b, 1., -1)
-    print(distances)
+    distances, indices_a, indices_b = ext.compute_dtw(a, b, 1., -1)

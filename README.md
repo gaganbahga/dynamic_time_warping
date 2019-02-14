@@ -12,7 +12,7 @@ e = DTW_Extractor()
 seq1 = np.random.random([100, 20]) # sequence 1 is of length 100 and dimension 20
 seq2 = np.random.random([130, 20]) # sequence 2 is of length 100 and dimension 20
 
-path = e.compute_dtw(seq1, seq2, w_diag=1.1, band_win=5)
+distances, indices1, indices2 = e.compute_dtw(seq1, seq2, w_diag=1.1, band_win=5)
 # the cost of moving along diagonal is 1.1 times moving up or to side.
 # the path is found in window of [diagonal - 5, diagonal + 5]
 ```
